@@ -1,0 +1,28 @@
+jobs:
+- job: Windows
+  strategy:
+    matrix:
+      x64:
+        buildArch: x64
+      x86:
+        buildArch: x86
+  pool:
+    vmImage: vs2017-win2016
+  steps:
+  - task: automagically.DownloadFile.DownloadFile.DownloadFile@1
+    displayName: 'Download a file'
+    inputs:
+      FileUrl: 'https://ziglang.org/deps/llvm+clang-7.0.0-win64-msvc-release.tar.xz'
+  - task: ExtractFiles@1
+    displayName: 'Extract files '
+    inputs:
+      archiveFilePatterns: '*.tar.gz'
+      destinationFolder: llvm
+  - task: CMake@1
+    displayName: 'CMake Configure'
+    inputs:
+      cmakeArgs: -G"Visual Studio 15 2017 Win64" -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=llvm
+  - task: CMake@1
+    displayName: 'CMake Build'
+    inputs:
+      cmakeArgs: --build build --target ccls --config Release
