@@ -17,11 +17,11 @@ jobs:
     displayName: 'Extract files '
     inputs:
       archiveFilePatterns: '*.tar.xz'
-      destinationFolder: llvm
+      destinationFolder: $(Build.SourcesDirectory)/llvm
   - task: CMake@1
     displayName: 'CMake Configure'
     inputs:
-      cmakeArgs: -G"Visual Studio 15 2017 Win64" -Bbuild -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=llvm
+      cmakeArgs: -G"Visual Studio 15 2017 Win64" -S$(Build.SourcesDirectory) -B$(Build.BinariesDirectory) -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$(Build.SourcesDirectory)/llvm
   - task: CMake@1
     displayName: 'CMake Build'
     inputs:
